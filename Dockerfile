@@ -21,5 +21,7 @@ ENV PATH $GOPATH/bin:$PATH
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
 COPY ./src /data
+COPY ./docker_entrypoint.sh /data/docker_entrypoint.sh
+COPY ./docker_entrypoint.sh /docker_entrypoint.sh
 
 CMD sh run.sh
