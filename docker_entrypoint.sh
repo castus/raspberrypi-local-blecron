@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "docker-entrypoint"
+
+sh /data/run.sh
