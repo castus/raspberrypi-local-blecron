@@ -66,7 +66,7 @@ func periodicallyCheckForLightTrigger() {
 func getMessage(isLightOn bool) string {
 	message := mqttHandler.Message{
 		IsLightOn: isLightOn,
-		Place:     "ble_cron",
+		Place:     "hall",
 	}
 	m, err := json.Marshal(message)
 	if err != nil {
