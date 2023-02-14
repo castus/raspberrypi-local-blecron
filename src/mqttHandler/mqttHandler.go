@@ -37,16 +37,16 @@ func PublishMessage(m string) {
 	opts.ConnectRetry = true
 	opts.AutoReconnect = true
 	opts.DefaultPublishHandler = func(_ mqtt.Client, msg mqtt.Message) {
-		fmt.Printf("UNEXPECTED MESSAGE: %s\n", msg)
+		fmt.Printf("type=debug tag=mqtt msg=\"UNEXPECTED MESSAGE: %s\"\n", msg)
 	}
 	opts.OnConnectionLost = func(cl mqtt.Client, err error) {
-		fmt.Println("connection lost")
+		fmt.Println("type=debug tag=mqtt msg=\"connection lost\"")
 	}
 	opts.OnConnect = func(c mqtt.Client) {
-		fmt.Println("connection established")
+		fmt.Println("type=debug tag=mqtt msg=\"connection established\"")
 	}
 	opts.OnReconnecting = func(mqtt.Client, *mqtt.ClientOptions) {
-		fmt.Println("attempting to reconnect")
+		fmt.Println("type=debug tag=mqtt msg=\"attempting to reconnect\"")
 	}
 
 	client := mqtt.NewClient(opts)
@@ -54,7 +54,7 @@ func PublishMessage(m string) {
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
-	fmt.Println("MQTT connection from blecron is up")
+	fmt.Println("type=success tag=mqtt msg=\"MQTT connection from blecron is up\"")
 
 	if os.Getenv("SHOULD_TRIGGER_ALEXA") == "false" {
 		log.Println("Dev mode: Alexa trigger not send, but invoked, to topic: " + TOPIC)
@@ -66,11 +66,11 @@ func PublishMessage(m string) {
 	t := client.Publish(TOPIC, QOS, false, m)
 	_ = t.Wait()
 	if t.Error() != nil {
-		log.Printf("ERROR Publishing: %s\n", t.Error())
+		log.Printf("type=error tag=mqtt msg=\"ERROR Publishing: %s\"\n", t.Error())
 		panic(t.Error())
 	} else {
-		log.Println("blecron published mqtt's request to trigger lightController to topic: ", TOPIC)
+		log.Printf("type=success tag=mqtt action=publish msg=\"%s\"", m)
 	}
 	client.Disconnect(1000)
-	log.Println("Client disconnected")
+	log.Println("type=debug tag=mqtt msg=\"Client disconnected\"")
 }
