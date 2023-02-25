@@ -69,7 +69,7 @@ func PublishMessage(m string) {
 		log.Printf("type=error tag=mqtt msg=\"ERROR Publishing: %s\"\n", t.Error())
 		panic(t.Error())
 	} else {
-		log.Printf("type=success tag=mqtt action=publish msg=\"%s\"", m)
+		log.Printf("type=success tag=mqtt action=publish msg='%s'\n", m)
 	}
 	client.Disconnect(1000)
 	log.Println("type=debug tag=mqtt msg=\"Client disconnected\"")

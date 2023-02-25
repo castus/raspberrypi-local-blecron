@@ -1,20 +1,15 @@
-FROM --platform=linux/arm/v7 golang:latest
+FROM --platform=linux/arm/v7 c4stus/raspberrypi:blecron-base-image AS builder
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
 WORKDIR /data
-
-RUN apt-get update -y && apt-get upgrade -y && apt-get install -yq --no-install-recommends \
-    locales \
-    nano \
-    bluetooth \
-    blueman \
-    bluez
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
-ENV LANG en_US.utf8
-ENV TZ=Europe/Warsaw
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 COPY ./src /data
+RUN sh go-init.sh
+RUN go build -o blecron
 
-CMD sh run.sh
+FROM builder
+WORKDIR /root/
+COPY --from=builder /data/blecron ./
+COPY --from=builder /data/isDeviceConnected.py ./
+CMD ["./blecron"]

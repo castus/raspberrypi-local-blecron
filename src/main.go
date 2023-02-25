@@ -46,13 +46,13 @@ func periodicallyCheckForLightTrigger() {
 			if !isConnected {
 				isConnected = true
 				go mqttHandler.PublishMessage(getMessage(true))
-				log.Printf("type=light-status place=%s is-on=true", place)
+				log.Printf("type=light-status place=%s is-on=true\n", place)
 			}
 		} else if strings.Contains(output, noConnectionString) {
 			if isConnected {
 				isConnected = false
 				go mqttHandler.PublishMessage(getMessage(false))
-				log.Printf("type=light-status place=%s is-on=false", place)
+				log.Printf("type=light-status place=%s is-on=false\n", place)
 			}
 		}
 	})
