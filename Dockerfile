@@ -3,6 +3,13 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM"
 
+RUN apt-get install -yq --no-install-recommends \
+  curl \
+  tzdata \
+  ca-certificates \
+  openssl
+RUN update-ca-certificates
+
 WORKDIR /data
 COPY ./src /data
 RUN sh go-init.sh
